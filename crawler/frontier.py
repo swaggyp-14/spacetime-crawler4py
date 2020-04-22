@@ -5,7 +5,9 @@ from threading import Thread, RLock
 from queue import Queue, Empty
 
 from utils import get_logger, get_urlhash, normalize
-from scraper import is_valid
+# Doug - added defragURL
+from scraper import is_valid, defragURL
+# Doug - end
 
 class Frontier(object):
     def __init__(self, config, restart):
@@ -40,6 +42,9 @@ class Frontier(object):
         total_count = len(self.save)
         tbd_count = 0
         for url, completed in self.save.values():
+            # Doug - added url defragging before it gets appended to tbd list
+            url = defragURL(url)
+            # Doug - end
             if not completed and is_valid(url):
                 self.to_be_downloaded.append(url)
                 tbd_count += 1
@@ -55,6 +60,9 @@ class Frontier(object):
 
     def add_url(self, url):
         url = normalize(url)
+        # Doug - add url defragging
+        url = defragURL(url)
+        # Doug - end
         urlhash = get_urlhash(url)
         if urlhash not in self.save:
             self.save[urlhash] = (url, False)
