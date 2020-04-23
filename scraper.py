@@ -1,6 +1,7 @@
 import re
 from urllib.parse import urlparse
 from utils.response import Response
+import requests
 from bs4 import BeautifulSoup
 import urllib.request
 from urllib.parse import urlparse
