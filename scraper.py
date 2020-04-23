@@ -1,7 +1,6 @@
 import re
 from urllib.parse import urlparse
 from utils.response import Response
-import requests
 from bs4 import BeautifulSoup
 import urllib.request
 from urllib.parse import urlparse
@@ -70,14 +69,14 @@ def is_valid(url):
         if "pdf" in url:
             return False
         if re.match(
-            r".*\.(css|js|bmp|gif|jpe?g|ico"
-            + r"|png|tiff?|mid|mp2|mp3|mp4"
-            + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
-            + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
-            + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-            + r"|epub|dll|cnf|tgz|sha1"
-            + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc)$", parsed.path.lower()):
+                r".*\.(css|js|bmp|gif|jpe?g|ico"
+                + r"|png|tiff?|mid|mp2|mp3|mp4"
+                + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
+                + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
+                + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
+                + r"|epub|dll|cnf|tgz|sha1|r|m|java|in|sas"
+                + r"|thmx|mso|arff|rtf|jar|csv|py|ss|rkt"
+                + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm)$", parsed.path.lower()):
             return False
         if parsed.query:
             if re.match(
@@ -86,9 +85,9 @@ def is_valid(url):
                     + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
                     + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
                     + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-                    + r"|epub|dll|cnf|tgz|sha1"
-                    + r"|thmx|mso|arff|rtf|jar|csv"
-                    + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc)$", parsed.query.lower()):
+                    + r"|epub|dll|cnf|tgz|sha1|r|m|java|in|sas"
+                    + r"|thmx|mso|arff|rtf|jar|csv|py|ss|rkt"
+                    + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm)$", parsed.query.lower()):
                 return False
         return True
 
@@ -115,14 +114,13 @@ def scraper(url, resp):
     # Doug - move defragURL to 'is_valid' because 'is_valid' is called in frontier.py to check if
     url = defragURL(url)
     links = list()
-    if check_encoding(url):
-        html = resp.raw_response.content
-        soup = BeautifulSoup(html, 'lxml')
-        s = soup.get_text()
-        if len(s) > 0:
-            links = extract_next_links(url, resp)
-            res = tokenize(s)
-            writeToFile(url, res)
+    html = resp.raw_response.content
+    soup = BeautifulSoup(html, 'lxml')
+    s = soup.get_text()
+    if len(s) > 0:
+        links = extract_next_links(url, resp)
+        res = tokenize(s)
+        writeToFile(url, res)
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
@@ -142,11 +140,3 @@ def extract_next_links(url, resp):
     # Doug added
     else:
         return([])
-
-    
-def check_encoding(url):
-    u = requests.get(url)
-    r = str(u.encoding).lower()
-    if (r not in {"utf-8", "iso-8859-1"}):
-        return False
-    return True
