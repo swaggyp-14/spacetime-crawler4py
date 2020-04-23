@@ -113,12 +113,15 @@ def writeToFile(url,res):
 def scraper(url, resp):
     # Doug - move defragURL to 'is_valid' because 'is_valid' is called in frontier.py to check if
     url = defragURL(url)
-    links = extract_next_links(url, resp)
-    html = resp.raw_response.content
-
-    soup = BeautifulSoup(html,'lxml')
-    res = tokenize(soup.get_text())
-    writeToFile(url,res)
+    links = list()
+    if check_encoding(url):
+        html = resp.raw_response.content
+        soup = BeautifulSoup(html, 'lxml')
+        s = soup.get_text()
+        if len(s) > 0:
+            links = extract_next_links(url, resp)
+            res = tokenize(s)
+            writeToFile(url, res)
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
@@ -139,3 +142,10 @@ def extract_next_links(url, resp):
     else:
         return([])
 
+    
+def check_encoding(url):
+    u = requests.get(url)
+    r = str(u.encoding).lower()
+    if (r not in {"utf-8", "iso-8859-1"}):
+        return False
+    return True
