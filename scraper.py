@@ -79,7 +79,7 @@ def is_valid(url):
                 + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
                 + r"|epub|dll|cnf|tgz|sha1|r|m|java|in|sas"
                 + r"|thmx|mso|arff|rtf|jar|csv|py|ss|rkt"
-                + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm)$", parsed.path.lower()):
+                + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm|ps.Z|eps.Z)$", parsed.path.lower()):
             return False
         if parsed.query:
             if re.match(
