@@ -13,6 +13,7 @@ dec_values.update(range(97,122+1))
 #Allowed domains
 allowed_domains = ("ics.uci.edu","cs.uci.edu","informatics.uci.edu","stat.uci.edu")    
 allowed_domain2 = "https://today.uci.edu/department/information_computer_sciences"
+black_list = ("ngs.ics.uci.edu")
 
 #Read stopwords from text 
 def load_stopwords():
@@ -58,6 +59,8 @@ def is_valid(url):
         url = defragURL(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
+        if parsed.netloc[4:] in black_list:
+            return False
         if parsed.netloc[4:] not in allowed_domains and url[:62] != allowed_domain2:
             return False
         # check for pdf, ppsx
@@ -87,7 +90,7 @@ def is_valid(url):
                     + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
                     + r"|epub|dll|cnf|tgz|sha1|r|m|java|in|sas"
                     + r"|thmx|mso|arff|rtf|jar|csv|py|ss|rkt"
-                    + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm)$", parsed.query.lower()):
+                    + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm|ps.Z|eps.Z)$", parsed.query.lower()):
                 return False
         return True
 
