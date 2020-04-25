@@ -59,7 +59,7 @@ def is_valid(url):
         url = defragURL(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
-        if parsed.netloc[4:] in black_list:
+        if parsed.netloc in black_list:
             return False
         if parsed.netloc[4:] not in allowed_domains and url[:62] != allowed_domain2:
             return False
@@ -79,7 +79,7 @@ def is_valid(url):
                 + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
                 + r"|epub|dll|cnf|tgz|sha1|r|m|java|in|sas"
                 + r"|thmx|mso|arff|rtf|jar|csv|py|ss|rkt"
-                + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm|ps.Z|eps.Z)$", parsed.path.lower()):
+                + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm|ps.Z|eps.Z|txt)$", parsed.path.lower()):
             return False
         if parsed.query:
             if re.match(
@@ -90,7 +90,7 @@ def is_valid(url):
                     + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
                     + r"|epub|dll|cnf|tgz|sha1|r|m|java|in|sas"
                     + r"|thmx|mso|arff|rtf|jar|csv|py|ss|rkt"
-                    + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm|ps.Z|eps.Z)$", parsed.query.lower()):
+                    + r"|rm|smil|wmv|swf|wma|zip|rar|gz|ppsx|pdf-1|odc|Z|scm|ps.Z|eps.Z|txt)$", parsed.query.lower()):
                 return False
         return True
 

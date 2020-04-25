@@ -8,7 +8,7 @@ class Parser():
         self.unique_pages = set()   # unique pages among every domain/subdomain
         self.subdomains = dict()    # subdomain as key, num of pages as value
         self.domains = set()        # includes domains and subdomains
-
+        self.word_count = dict()
 
     def handle_files(self) -> ['files']:
         ''' Adds all the files with uci.edu.txt
@@ -42,6 +42,7 @@ class Parser():
                 for line in text_file:
                     # checking if the line is a page
                     if "uci.edu" in line:
+                        curr_url = line
                         if "#" in line:
                             current_page = line.strip().split("#")[0]
                         else:
@@ -54,10 +55,13 @@ class Parser():
                         
                     # signals the end of a page, so checks whether the 
                     # this was the longest page
-                    elif line == "STOPHERE\n":
+                    if line == "STOPHERE\n":
                         if word_count > self.most_words:
                             self.most_words = word_count
                             self.longest_page = current_page
+                            self.word_count[current_page] = self.most_words
+                            self.most_words = 0
+                            word_count = 0
 
                     else:
                         # the line is a word, so adds to the most common words
@@ -79,11 +83,13 @@ class Parser():
 
     def get_longest_page(self):
         ''' returns the page with most words on it '''
-        return self.longest_page
+        self.word_count = sorted(self.word_count.items(),key=lambda x:x[1],reverse=True)
+        self.word_count = list(self.word_count)
+        return self.word_count[0][0]
     
     def get_longest_page_count(self):
         ''' returns longest page's word count '''
-        return self.most_words
+        return self.word_count[0][1]
 
     def get_common_words(self):
         ''' returns a list of the most common words
